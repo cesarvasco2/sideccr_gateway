@@ -25,7 +25,7 @@ while True:
         #Dict para montar a URL para o SiDeCC-R
                 dict_url = {}
                 dict_url['usuario'] = payload_dict['dados_sideccr']['usuario']
-                dict_url['medidor'] = payload_dict['hidrometro']
+                dict_url['medidor'] = payload_dict['dados_sideccr']['codigo_medidor']
                 dict_url['vazao'] = payload_dict['vazao']/3600
                 dict_url['datahora'] = dt_utc.strftime('%Y-%m-%dT%H:%M:%SZ') #.astimezone(pytz.UTC)
                 dict_url['chave'] = payload_dict['dados_sideccr']['chave']
@@ -42,9 +42,9 @@ while True:
         # Apaga mensagem da fila
                 message.delete()
                 # Print no console em caso de erro
-        if  resp_http != '000' or r.status_code != '200':
-            if not resp_http == False:
-                print('{}\nC—digo HTTP: {}\nResposta do servidor: {}\nTimestamp: {}'.format(r.url, r.status_code, resp_http_msg, data_hora))                        
+                if  resp_http != '000' or r.status_code != '200':
+                        if not resp_http == False:
+                                print('{}\nC—digo HTTP: {}\nResposta do servidor: {}\nTimestamp: {}'.format(r.url, r.status_code, resp_http_msg, data_hora))                        
     except:
         print('Ocorreu um erro esperando 60 segundos para tentar novamente')
         time.sleep(60)
