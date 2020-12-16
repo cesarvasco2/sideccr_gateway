@@ -44,10 +44,9 @@ while True:
                 # Print no console em caso de erro
                 if  resp_http != '000' or r.status_code != '200':
                         if not resp_http == False:
-                                print('{}\nC—digo HTTP: {}\nResposta do servidor: {}\nTimestamp: {}'.format(r.url, r.status_code, resp_http_msg, data_hora))                        
+                                print('{}\nCódigo HTTP: {}\nResposta do servidor: {}\nTimestamp: {}'.format(r.url, r.status_code, resp_http_msg, data_hora))                        
         time.sleep(2)
     except:
         print('Ocorreu um erro esperando 60 segundos para tentar novamente')
         time.sleep(60)
-        pass            
-    
+                      
