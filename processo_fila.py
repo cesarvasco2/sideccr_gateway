@@ -40,12 +40,14 @@ while True:
                 Operations.create(tabela,payload_dict)
                 #print(payload_dict)
         # Apaga mensagem da fila
-                if  r.status_code == '200':
+                if  r.status_code == 200:
                         message.delete()
                 # Print no console em caso de erro
-                if  resp_http != '000' or r.status_code != '200':
+                if  resp_http != 000 or r.status_code != 200:
                         if not resp_http == False:
-                                print('{}\nCódigo HTTP: {}\nResposta do servidor: {}\nTimestamp: {}'.format(r.url, r.status_code, resp_http_msg, data_hora))                        
+                                print('{}\nCódigo HTTP: {}\nResposta do servidor: {}\nTimestamp: {}'.format(r.url, r.status_code, resp_http_msg, data_hora))
+                else:
+                        print('{}\nCódigo HTTP: {}\nResposta do servidor: {}\nTimestamp: {}'.format(r.url, r.status_code, resp_http_msg, data_hora))                                        
         time.sleep(2)
     except:
         print('Ocorreu um erro esperando 60 segundos para tentar novamente')
