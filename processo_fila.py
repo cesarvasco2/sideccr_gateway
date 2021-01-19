@@ -40,7 +40,8 @@ while True:
                 Operations.create(tabela,payload_dict)
                 #print(payload_dict)
         # Apaga mensagem da fila
-                message.delete()
+                if  r.status_code == '200':
+                        message.delete()
                 # Print no console em caso de erro
                 if  resp_http != '000' or r.status_code != '200':
                         if not resp_http == False:
