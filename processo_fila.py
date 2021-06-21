@@ -1,7 +1,7 @@
 import boto3
 import requests
 import time
-import pytz
+#import pytz
 import json
 from datetime import date, datetime
 from operations import Operations
@@ -19,6 +19,8 @@ while True:
         for message in queue.receive_messages():
                 payload = message.body
                 payload_dict = json.loads(payload)
+                print(payload)
+                print(payload_dict)
                 dt_utc = datetime.fromtimestamp(payload_dict['data_hora_fechado'])
                 dt_utc = pytz.timezone('America/Sao_Paulo').localize(dt_utc)
                 data_hora = int(datetime.now().timestamp())
@@ -40,7 +42,7 @@ while True:
                 Operations.create(tabela,payload_dict)
                 #print(payload_dict)
         # Apaga mensagem da fila
-                if  r.status_code == 200:
+                if  r.status_code == 200 and resp_http == 000:
                         message.delete()
                 # Print no console em caso de erro
                 if  resp_http != 000 or r.status_code != 200:
@@ -51,5 +53,5 @@ while True:
         time.sleep(2)
     except:
         print('Ocorreu um erro esperando 60 segundos para tentar novamente')
-        time.sleep(60)
+        time.sleep(5400)
                       
