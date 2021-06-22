@@ -1,7 +1,7 @@
 import boto3
 import requests
 import time
-#import pytz
+import pytz
 import json
 from datetime import date, datetime
 from operations import Operations
@@ -19,8 +19,6 @@ while True:
         for message in queue.receive_messages():
                 payload = message.body
                 payload_dict = json.loads(payload)
-                print(payload)
-                print(payload_dict)
                 dt_utc = datetime.fromtimestamp(payload_dict['data_hora_fechado'])
                 dt_utc = pytz.timezone('America/Sao_Paulo').localize(dt_utc)
                 data_hora = int(datetime.now().timestamp())
@@ -42,16 +40,15 @@ while True:
                 Operations.create(tabela,payload_dict)
                 #print(payload_dict)
         # Apaga mensagem da fila
-                if  r.status_code == 200 and resp_http == 000:
-                        message.delete()
+                if  r.status_code == 200 and resp_http =='000' :
+                         message.delete()
                 # Print no console em caso de erro
-                if  resp_http != 000 or r.status_code != 200:
+                if  resp_http != '000' or r.status_code != 200:
                         if not resp_http == False:
-                                print('{}\nCódigo HTTP: {}\nResposta do servidor: {}\nTimestamp: {}'.format(r.url, r.status_code, resp_http_msg, data_hora))
-                else:
-                        print('{}\nCódigo HTTP: {}\nResposta do servidor: {}\nTimestamp: {}'.format(r.url, r.status_code, resp_http_msg, data_hora))                                        
+                                print('\n')                        
+                print('{}\nCódigo HTTP: {}\nResposta do servidor: {}\nTimestamp: {}'.format(r.url, r.status_code, resp_http_msg, data_hora))
         time.sleep(2)
     except:
-        print('Ocorreu um erro esperando 60 segundos para tentar novamente')
+        print('Ocorreu um erro esperando 1h:30m para tentar novamente')
         time.sleep(5400)
                       
