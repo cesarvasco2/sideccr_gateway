@@ -46,7 +46,7 @@ while True:
                 if  resp_http != '000' or r.status_code != 200:
                         if not resp_http == False:
                                 print('\n')
-                if  resp_http != '006':
+                if  resp_http == '006':
                         print('Erro registrando valor')
                         message.delete()                                       
                 print('{}\nCódigo HTTP: {}\nResposta do servidor: {}\nTimestamp: {}'.format(r.url, r.status_code, resp_http_msg, data_hora))
