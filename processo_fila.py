@@ -12,6 +12,7 @@ tabela = dynamodb.Table('log_sideccr')
 sqs = boto3.resource('sqs', region_name='us-east-1')
 queue = sqs.get_queue_by_name(QueueName='sideccr')
 #Loop
+erros = 0
 print('PROCESSO INICIADO...' )
 while True:
     resp_http = False
@@ -26,7 +27,7 @@ while True:
                 dict_url = {}
                 dict_url['usuario'] = payload_dict['dados_sideccr']['usuario']
                 dict_url['medidor'] = payload_dict['dados_sideccr']['codigo_medidor']
-                dict_url['vazao'] = payload_dict['vazao']/3600
+                dict_url['vazao'] = round(payload_dict['vazao']/3600, 3)
                 dict_url['datahora'] = dt_utc.strftime('%Y-%m-%dT%H:%M:%SZ') #.astimezone(pytz.UTC)
                 dict_url['chave'] = payload_dict['dados_sideccr']['chave']
                 r = requests.get('http://sideccr.daeebmt.sp.gov.br/envia?', params = dict_url)
@@ -36,7 +37,7 @@ while True:
         #Montar o log para o banco de dados G-Hidro
                 payload_dict['resposta_sideccr'] = {'mensagem_erro':resp_http_msg, 'codigo_erro':resp_http }
                 payload_dict['timestamp'] = payload_dict['data_hora_utlizado']
-                payload_dict['vazao'] = str(payload_dict['vazao']/3600)
+                payload_dict['vazao'] = str(round(payload_dict['vazao']/3600, 3))
                 Operations.create(tabela,payload_dict)
                 #print(payload_dict)
         # Apaga mensagem da fila
@@ -46,12 +47,13 @@ while True:
                 if  resp_http != '000' or r.status_code != 200:
                         if not resp_http == False:
                                 print('\n')
-                if  resp_http == '006':
-                        print('Erro registrando valor')
+                if  resp_http == '006' or resp_http =='007':
+                        erros = erros + 1
+                        print('Erro registrando valor\n Quantidade de erros registrados desde o inicio do processo:'+ erros)
                         message.delete()                                       
                 print('{}\nCódigo HTTP: {}\nResposta do servidor: {}\nTimestamp: {}'.format(r.url, r.status_code, resp_http_msg, data_hora))
         time.sleep(2)
     except:
-        print('Ocorreu um erro esperando 1h:30m para tentar novamente')
-        time.sleep(5400)
+        print('[STATUS] Ocorreu um erro esperando 15m para tentar novamente')
+        time.sleep(900)
                       
