@@ -11,6 +11,7 @@ tabela = dynamodb.Table('log_sideccr')
 #config SQS
 sqs = boto3.resource('sqs', region_name='us-east-1')
 queue = sqs.get_queue_by_name(QueueName='sideccr')
+cookies = {'XX':'TOMCAT_5'}
 #Loop
 print('PROCESSO INICIADO...' )
 while True:
@@ -29,7 +30,7 @@ while True:
                 dict_url['vazao'] = round(payload_dict['vazao']/3600, 3)
                 dict_url['datahora'] = dt_utc.strftime('%Y-%m-%dT%H:%M:%SZ') #.astimezone(pytz.UTC)
                 dict_url['chave'] = payload_dict['dados_sideccr']['chave']
-                r = requests.get('http://sideccr.daeebmt.sp.gov.br/envia?', params = dict_url)
+                r = requests.get('http://sideccr.daeebmt.sp.gov.br/envia?', params = dict_url, cookies=cookies)
         # Codigos de resposta do SiDeCC-R e servidor HTTP
                 resp_http = r.content.decode('utf-8').split(' ')[1]
                 resp_http_msg = r.content.decode('utf-8')
@@ -57,7 +58,7 @@ while True:
     except:
         if payload_dict['vazao'] < 0:
                 message.delete() 
-                print('Vazão negativa'+ ','+dict_url['usuario']+ ','+dict_url['medidor']+ ','+dict_url['chave'])
+                print('Vazão negativa'+ ','+dict_url['usuario']+ ','+dict_url['medidor']+ ','+dict_url['chave']+ ',' +dict_url['vazao'] )
         print('[STATUS] Ocorreu um erro esperando 5m para tentar novamente')
         time.sleep(300)
                       
