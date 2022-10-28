@@ -58,7 +58,7 @@ while True:
     except:
         if payload_dict['vazao'] < 0:
                 message.delete() 
-                print('Vazão negativa'+ ','+dict_url['usuario']+ ','+dict_url['medidor']+ ','+dict_url['chave']+ ',' +dict_url['vazao'] )
+                print('Vazão negativa'+ ','+dict_url['usuario']+ ','+dict_url['medidor']+ ','+dict_url['chave']+ ','+str(dict_url['vazao']) )
         print('[STATUS] Ocorreu um erro esperando 5m para tentar novamente')
         time.sleep(300)
                       
